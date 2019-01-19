@@ -8,18 +8,20 @@
 
 int main()
 {
-        bool running=true;
-        while(running)
+        bool running = true;
+        while (running)
         {
-                //printGettingStarted();
-                //scanExpression();
-                //printQuestionForPath();
-                //scanPath()
-                //convertExpressionToTree();
+                printGettingStarted();
+                char expression[STRING_SIZE];
+                scanExpression(expression);
+                printQuestionForPath();
+                char path[STRING_SIZE];
+                scanPath(path);
+                convertExpressionToTree(expression);
                 //generateBitmap();
                 //printBitmap();
-                //printDoneAndQuestionForAgain();
-                //scanIfExit();
+                printDoneAndQuestionForAgain();
+                running = scanIfExit();
         }
         return 0;
 }

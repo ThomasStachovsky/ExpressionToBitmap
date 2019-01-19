@@ -1,2 +1,2 @@
 #!/bin/bash
-gcc main.c bitmap.c bitmap.h io.h io.c tree.c tree.h utilities.h utilities.c
+gcc main.c bitmap.c bitmap.h io.h io.c tree.c tree.h utilities.h utilities.c -o exe
