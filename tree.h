@@ -21,12 +21,12 @@ typedef struct node
         struct node *left, *right;
 } node;
 
-node *createNode(char *expression);
-node *operateOnNode(node *first, node *second, char operator);
+node *createNode(unit object);
+node *operateOnNode(node *left, node *right, unit object);
 
 bool isOperator(char character);
 int weight(char operator);
 int associativity(char operator);
 node *convertExpressionToTree(char *expression);
-unit *convertAlgebraicToRPN(char *expression);
-node *convertRPNToTree(unit *rpn);
+unit *convertAlgebraicToRPN(char *expression, unsigned int *rpn_size);
+node *convertRPNToTree(unit *rpn, unsigned int rpn_size);

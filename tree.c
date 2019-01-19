@@ -11,35 +11,33 @@
 
 node *convertExpressionToTree(char *expression)
 {
-        unit *rpn = convertAlgebraicToRPN(expression);
-        node *root_of_tree = convertRPNToTree(rpn);
+        unsigned int rpn_size;
+        unit *rpn = convertAlgebraicToRPN(expression, &rpn_size);
+        node *root_of_tree = convertRPNToTree(rpn, rpn_size);
         return root_of_tree;
 }
 
-node *createNode(char *expression)
+node *createNode(unit object)
 {
         node *first_node = (node *)malloc(sizeof(node));
         first_node->left = NULL;
         first_node->right = NULL;
-        strcpy(first_node->value.expression, expression);
-        first_node->value.type = EXPRESSION;
+        first_node->value = object;
         return first_node;
 }
 
-node *operateOnNode(node *first, node *second, char operator)
+node *operateOnNode(node *left, node *right, unit object)
 {
         node *result = malloc(sizeof(node));
-        result->value.type = OPERATOR;
-        result->value.expression[0] = operator;
-        result->value.expression[1] = '\0';
-        result->left = first;
-        result->right = second;
+        result->value = object;
+        result->left = left;
+        result->right = right;
         return result;
 }
 
 bool isOperator(char character)
 {
-        if (character == '(' || character == ')' || character == '/' || character == '*' || character == '-' || character == '+' || character == '^' || character == '_')
+        if (character == '(' || character == ')' || character == '/' || character == '*' || character == '-' || character == '+' || character == '^' || character == '@' || character == '_' || character == ',')
                 return true;
         else
                 return false;
@@ -70,7 +68,7 @@ int associativity(char operator)
                 return LEFT_ASSOCIATIVITY;
 }
 
-unit *convertAlgebraicToRPN(char *expression)
+unit *convertAlgebraicToRPN(char *expression, unsigned int *rpn_size)
 {
         unsigned int size_of_expression = strlen(expression);
         unsigned int expression_iterator = 0;
@@ -90,8 +88,6 @@ unit *convertAlgebraicToRPN(char *expression)
         {
 
                 character = expression[expression_iterator];
-                if (isspace(character))
-                        continue;
 
                 if (isOperator(character))
                 {
@@ -144,10 +140,11 @@ unit *convertAlgebraicToRPN(char *expression)
                                 operator_stack[operator_stack_iterator++] = character;
                         }
                 }
-                else
+                else if (!isspace(character))
                         appendString(current_expression, character);
 
                 expression_iterator++;
+
         } while (expression_iterator < size_of_expression);
 
         if (current_expression[0] != '\0')
@@ -168,5 +165,30 @@ unit *convertAlgebraicToRPN(char *expression)
                 rpn[rpn_iterator].type = OPERATOR;
                 rpn_iterator++;
         }
+
+        *rpn_size = rpn_iterator;
+
         return rpn;
+}
+
+node *convertRPNToTree(unit *rpn, unsigned int rpn_size)
+{
+
+        unsigned int stack_iterator = 0;
+        node *stack[RPN_ARRAY_SIZE];
+
+        for (unsigned int rpn_iterator = 0; rpn_iterator < rpn_size; rpn_iterator++)
+        {
+                if (rpn[rpn_iterator].type == OPERATOR)
+                {
+                        stack[stack_iterator - 2] = operateOnNode(stack[stack_iterator - 2], stack[stack_iterator - 1], rpn[rpn_iterator]);
+                        stack_iterator--;
+                }
+                else
+                {
+                        stack[stack_iterator] = createNode(rpn[rpn_iterator]);
+                        stack_iterator++;
+                }
+        }
+        return stack[stack_iterator - 1];
 }
