@@ -8,6 +8,7 @@
 #define RPN_ARRAY_SIZE 512
 #define RIGHT_ASSOCIATIVITY 1
 #define LEFT_ASSOCIATIVITY 0
+#define FUNCTION '@'
 
 typedef struct unit
 {

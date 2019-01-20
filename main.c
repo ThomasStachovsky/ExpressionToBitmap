@@ -8,8 +8,8 @@
 
 int main()
 {
-        bool running = true;
-        while (running)
+
+        while (true)
         {
                 printGettingStarted();
                 char expression[STRING_SIZE];
@@ -21,7 +21,8 @@ int main()
                 //generateBitmap();
                 //printBitmap();
                 printDoneAndQuestionForAgain();
-                running = scanIfExit();
+                if (!scanIfAgain())
+                        break;
         }
         return 0;
 }

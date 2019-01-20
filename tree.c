@@ -37,7 +37,7 @@ node *operateOnNode(node *left, node *right, unit object)
 
 bool isOperator(char character)
 {
-        if (character == '(' || character == ')' || character == '/' || character == '*' || character == '-' || character == '+' || character == '^' || character == '@' || character == '_' || character == ',')
+        if (character == '(' || character == ')' || character == '/' || character == '*' || character == '-' || character == '+' || character == '^' || character == FUNCTION || character == '_' || character == ',')
                 return true;
         else
                 return false;
@@ -45,8 +45,7 @@ bool isOperator(char character)
 
 int weight(char operator)
 {
-        //not for ( and )
-        if (operator== '@')
+        if (operator== FUNCTION)
                 return 4;
         if (operator== '^' || operator== '_')
                 return 3;
@@ -62,7 +61,7 @@ int weight(char operator)
 
 int associativity(char operator)
 {
-        if (operator== '^' || operator== '@')
+        if (operator== '^' || operator== FUNCTION)
                 return RIGHT_ASSOCIATIVITY;
         else
                 return LEFT_ASSOCIATIVITY;
@@ -82,7 +81,7 @@ unit *convertAlgebraicToRPN(char *expression, unsigned int *rpn_size)
         char character;
 
         char current_expression[STRING_SIZE];
-        current_expression[0] = '\0';
+        clearString(current_expression);
 
         do
         {
@@ -93,19 +92,19 @@ unit *convertAlgebraicToRPN(char *expression, unsigned int *rpn_size)
                 {
                         bool nonempty_previous_expression = false;
 
-                        if (current_expression[0] != '\0')
+                        if (!isStringEmpty(current_expression))
                         {
                                 strcpy(rpn[rpn_iterator].expression, current_expression);
                                 rpn[rpn_iterator].type = EXPRESSION;
                                 rpn_iterator++;
-                                current_expression[0] = '\0';
+                                clearString(current_expression);
                                 nonempty_previous_expression = true;
                         }
 
                         if (character == '(')
                         {
                                 if (expression_iterator != 0 && nonempty_previous_expression)
-                                        operator_stack[operator_stack_iterator++] = '@';
+                                        operator_stack[operator_stack_iterator++] = FUNCTION;
 
                                 operator_stack[operator_stack_iterator++] = character;
                         }
@@ -115,10 +114,8 @@ unit *convertAlgebraicToRPN(char *expression, unsigned int *rpn_size)
                                 while (operator_stack[operator_stack_iterator - 1] != '(')
                                 {
                                         operator_stack_iterator--;
-                                        char operator_as_string[2];
-                                        operator_as_string[0] = operator_stack[operator_stack_iterator];
-                                        operator_as_string[1] = '\0';
-                                        strcpy(rpn[rpn_iterator].expression, operator_as_string);
+                                        rpn[rpn_iterator].expression[0] = operator_stack[operator_stack_iterator];
+                                        rpn[rpn_iterator].expression[1] = '\0';
                                         rpn[rpn_iterator].type = OPERATOR;
                                         rpn_iterator++;
                                 }
@@ -130,10 +127,8 @@ unit *convertAlgebraicToRPN(char *expression, unsigned int *rpn_size)
                                 while (operator_stack_iterator > 0 && operator_stack[operator_stack_iterator - 1] != '(' && (weight(operator_stack[operator_stack_iterator - 1]) > weight(character) || (weight(operator_stack[operator_stack_iterator - 1]) == weight(character) && associativity(operator_stack[operator_stack_iterator - 1]) == LEFT_ASSOCIATIVITY)))
                                 {
                                         operator_stack_iterator--;
-                                        char operator_as_string[2];
-                                        operator_as_string[0] = operator_stack[operator_stack_iterator];
-                                        operator_as_string[1] = '\0';
-                                        strcpy(rpn[rpn_iterator].expression, operator_as_string);
+                                        rpn[rpn_iterator].expression[0] = operator_stack[operator_stack_iterator];
+                                        rpn[rpn_iterator].expression[1] = '\0';
                                         rpn[rpn_iterator].type = OPERATOR;
                                         rpn_iterator++;
                                 }
@@ -147,21 +142,19 @@ unit *convertAlgebraicToRPN(char *expression, unsigned int *rpn_size)
 
         } while (expression_iterator < size_of_expression);
 
-        if (current_expression[0] != '\0')
+        if (!isStringEmpty(current_expression))
         {
                 strcpy(rpn[rpn_iterator].expression, current_expression);
                 rpn[rpn_iterator].type = EXPRESSION;
                 rpn_iterator++;
-                current_expression[0] = '\0';
+                clearString(current_expression);
         }
 
         while (operator_stack_iterator > 0)
         {
                 operator_stack_iterator--;
-                char operator_as_string[2];
-                operator_as_string[0] = operator_stack[operator_stack_iterator];
-                operator_as_string[1] = '\0';
-                strcpy(rpn[rpn_iterator].expression, operator_as_string);
+                rpn[rpn_iterator].expression[0] = operator_stack[operator_stack_iterator];
+                rpn[rpn_iterator].expression[1] = '\0';
                 rpn[rpn_iterator].type = OPERATOR;
                 rpn_iterator++;
         }

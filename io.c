@@ -74,7 +74,7 @@ void printDoneAndQuestionForAgain()
     printf("Debug: Printed. Press y/Y to print another expression or n/N to exit...");
 }
 
-bool scanIfExit()
+bool scanIfAgain()
 {
     char character = getchar();
     while (true)

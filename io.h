@@ -2,7 +2,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-
 #define STRING_SIZE 512
 
 void printGettingStarted();
@@ -11,4 +10,4 @@ void printQuestionForPath();
 void scanPath(char *path);
 void printBitmap();
 void printDoneAndQuestionForAgain();
-bool scanIfExit();
+bool scanIfAgain();
