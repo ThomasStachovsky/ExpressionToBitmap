@@ -71,7 +71,7 @@ void scanPath(char *path)
 
 void printDoneAndQuestionForAgain()
 {
-    printf("Debug: Printed. Press y/Y to print another expression or n/N to exit...");
+    printf(GREEN "Debug: Printed. Press y/Y to print another expression or n/N to exit..." RESET);
 }
 
 bool scanIfAgain()
@@ -116,9 +116,11 @@ image *scanAlphabet()
         if (doesFileExist(filename))
         {
             printf("%s loaded to alphabet.\n", filename); //DEBUG
-            FILE *file = fopen(filename, "r");
+            FILE *file = fopen(filename, "rb");
             alphabet[i].magic_number[0] = fgetc(file);
             alphabet[i].magic_number[1] = fgetc(file);
+
+            fgetc(file);
             int character = getc(file);
             while (character == '#')
             {
@@ -138,4 +140,27 @@ image *scanAlphabet()
     }
 
     return alphabet;
+}
+
+void printImage(image output, const char *original_path)
+{
+    char path[STRING_SIZE];
+    strcpy(path, original_path);
+    const char *EXTENSTION = ".ppm";
+    sprintf(path, "%s%s", path, EXTENSTION);
+    if (doesFileExist(path))
+    {
+        printf(RED "This file already exist. For your safety please type the path again or type another one:\n" RESET);
+        scanf("%s", path);
+        sprintf(path, "%s%s", path, EXTENSTION);
+        getchar();
+    }
+
+    FILE *file = fopen(path, "wb");
+    fprintf(file, "%c%c\n", output.magic_number[0], output.magic_number[1]);
+    fprintf(file, "# Created by Tomasz Stachowski's program\n");
+    fprintf(file, "%d %d\n", output.width, output.height);
+    fprintf(file, "%d\n", output.maxval);
+    fwrite(output.map, 3 * output.width, output.height, file);
+    fclose(file);
 }

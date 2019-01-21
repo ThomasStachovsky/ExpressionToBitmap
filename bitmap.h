@@ -21,4 +21,9 @@ typedef struct image
     pixel *map;
 } image;
 
-void generateBitmap();
+image generateBitmap(image *alphabet, node *tree);
+image generateBitmapFromTextDEBUG(image *alphabet, const char *expression);
+image mergeBitmap(image left, image right);
+void getTypeP6(char *magic_number);
+void createImage(image empty);
+bool isImageEmpty(image candidate);

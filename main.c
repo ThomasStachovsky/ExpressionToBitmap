@@ -6,18 +6,24 @@
 int main()
 {
         image *alphabet = scanAlphabet();
+        node *tree;
+        image output;
+        char expression[STRING_SIZE];
+        char path[STRING_SIZE];
+
+        image result = generateBitmapFromTextDEBUG(alphabet, "Hejka tu tomek 123 elo @");
+
+        printImage(result, "out");
 
         while (true)
         {
                 printGettingStarted();
-                char expression[STRING_SIZE];
                 scanExpression(expression);
                 printQuestionForPath();
-                char path[STRING_SIZE];
                 scanPath(path);
-                convertExpressionToTree(expression);
-                //generateBitmap();
-                //printBitmap();
+                tree = convertExpressionToTree(expression);
+                //output = generateBitmap(alphabet, tree);
+                //printImage(output, path);
                 printDoneAndQuestionForAgain();
                 if (!scanIfAgain())
                         break;

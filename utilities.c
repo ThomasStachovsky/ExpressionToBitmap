@@ -21,3 +21,19 @@ void clearString(char *s)
 {
         s[0] = '\0';
 }
+
+int maxInt(int a, int b)
+{
+        if (a > b)
+                return a;
+        else
+                return b;
+}
+
+int minInt(int a, int b)
+{
+        if (a < b)
+                return a;
+        else
+                return b;
+}

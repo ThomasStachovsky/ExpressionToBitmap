@@ -18,55 +18,55 @@ typedef struct node
 
 node *create(double number)
 {
-    node *first_node=malloc(sizeof(node));
-    first_node->left=NULL;
-    first_node->right=NULL;
-    first_node->argument=number;
-    first_node->operator='\0';
+    node *first_node = malloc(sizeof(node));
+    first_node->left = NULL;
+    first_node->right = NULL;
+    first_node->argument = number;
+    first_node->operator= '\0';
     return first_node;
 }
 
 node *operate(node *first, node *second, char operator)
 {
-    node *result=malloc(sizeof(node));
-    result->operator=operator;
-    result->left=first;
-    result->right=second;
+    node *result = malloc(sizeof(node));
+    result->operator= operator;
+    result->left = first;
+    result->right = second;
     return result;
 }
 
 node *scan()
 {
     node *stack[STACK_SIZE];
-    unsigned top=0;
+    unsigned top = 0;
     char operator;
     double argument;
     char character;
-    while(character!='=')
+    while (character != '=')
     {
-        character=getchar();
-        if(isspace(character))
+        character = getchar();
+        if (isspace(character))
             continue;
-        if(character=='+' || character=='-' || character=='*' || character=='/')
+        if (character == '+' || character == '-' || character == '*' || character == '/')
         {
-            operator=character;
-            stack[top-2]=operate(stack[top-2],stack[top-1],operator);
+            operator= character;
+            stack[top - 2] = operate(stack[top - 2], stack[top - 1], operator);
             top--;
         }
-        else if(character!='=')
+        else if (character != '=')
         {
-            ungetc(character,stdin);
-            scanf("%lf",&argument);
-            stack[top]=create(argument);
+            ungetc(character, stdin);
+            scanf("%lf", &argument);
+            stack[top] = create(argument);
             top++;
         }
     }
-    return stack[top-1];
+    return stack[top - 1];
 }
 
 int priority(char operator)
 {
-    if(operator=='*' || operator=='/')
+    if (operator== '*' || operator== '/')
         return 1;
     else
         return 0;
@@ -74,7 +74,7 @@ int priority(char operator)
 
 int commutative(char operator)
 {
-    if(operator=='-' || operator=='/')
+    if (operator== '-' || operator== '/')
         return 0;
     else
         return 1;
@@ -82,39 +82,36 @@ int commutative(char operator)
 
 void print(node *current)
 {
-    if(current==NULL)
+    if (current == NULL)
         return;
-    if(current->operator!='\0')
+    if (current->operator!= '\0')
     {
-        if((current->left->operator != '\0' && priority(current->operator)>priority(current->left->operator)))
+        if ((current->left->operator!= '\0' && priority(current->operator) > priority(current->left->operator)))
             printf("(");
 
         print(current->left);
 
-        if((current->left->operator != '\0' && priority(current->operator)>priority(current->left->operator)))
+        if ((current->left->operator!= '\0' && priority(current->operator) > priority(current->left->operator)))
             printf(")");
-        printf("%c",current->operator);
-        if((current->right->operator != '\0' && priority(current->operator)>priority(current->right->operator)) ||
-                (current->right->operator != '\0' && priority(current->operator)==priority(current->right->operator) && !commutative(current->operator)))
+        printf("%c", current->operator);
+        if ((current->right->operator!= '\0' && priority(current->operator) > priority(current->right->operator)) ||
+            (current->right->operator!= '\0' && priority(current->operator) == priority(current->right->operator) && !commutative(current->operator)))
 
             printf("(");
 
         print(current->right);
-        if((current->right->operator != '\0' && priority(current->operator)>priority(current->right->operator)) ||
-                (current->right->operator != '\0' && priority(current->operator)==priority(current->right->operator) && !commutative(current->operator)))
+        if ((current->right->operator!= '\0' && priority(current->operator) > priority(current->right->operator)) ||
+            (current->right->operator!= '\0' && priority(current->operator) == priority(current->right->operator) && !commutative(current->operator)))
             printf(")");
     }
     else
-        printf("%.1lf",current->argument);
+        printf("%.1lf", current->argument);
 }
-
-
-
 
 int main()
 {
     node *root;
-    root=scan();
+    root = scan();
     print(root);
     return 0;
 }
