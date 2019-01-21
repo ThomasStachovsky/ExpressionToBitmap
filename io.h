@@ -2,8 +2,9 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define STRING_SIZE 512
+#include "bitmap.h"
 
+image *scanAlphabet();
 void printGettingStarted();
 void scanExpression(char *expression);
 void printQuestionForPath();
@@ -11,3 +12,4 @@ void scanPath(char *path);
 void printBitmap();
 void printDoneAndQuestionForAgain();
 bool scanIfAgain();
+bool doesFileExist(char *filename);

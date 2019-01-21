@@ -1,13 +1,9 @@
-#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
 
-#include "bitmap.h"
-#include "io.h"
 #include "tree.h"
-#include "utilities.h"
 
 node *convertExpressionToTree(char *expression)
 {
@@ -37,7 +33,7 @@ node *operateOnNode(node *left, node *right, unit object)
 
 bool isOperator(char character)
 {
-        if (character == '(' || character == ')' || character == '/' || character == '*' || character == '-' || character == '+' || character == '^' || character == FUNCTION || character == '_' || character == ',')
+        if (character == '(' || character == ')' || character == '/' || character == '*' || character == '-' || character == '+' || character == '^' || character == FUNCTION || character == '_' || character == ',' || character == '=' || character == '<' || character == '>')
                 return true;
         else
                 return false;
@@ -53,7 +49,7 @@ int weight(char operator)
                 return 2;
         if (operator== '+' || operator== '-')
                 return 1;
-        if (operator== ',')
+        if (operator== ',' || operator== '=' || operator== '<' || operator== '>')
                 return 0;
         else
                 return -1;

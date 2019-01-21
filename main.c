@@ -1,13 +1,11 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#include "bitmap.h"
 #include "io.h"
-#include "tree.h"
-#include "utilities.h"
 
 int main()
 {
+        image *alphabet = scanAlphabet();
 
         while (true)
         {

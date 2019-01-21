@@ -1,7 +1,6 @@
-#include <stdio.h>
 #include <stdbool.h>
 
-#include "io.h"
+#include "utilities.h"
 
 #define OPERATOR 1
 #define EXPRESSION 0
