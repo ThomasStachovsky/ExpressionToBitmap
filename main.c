@@ -11,10 +11,6 @@ int main()
         char expression[STRING_SIZE];
         char path[STRING_SIZE];
 
-        //image result = generateBitmapFromTextDEBUG(alphabet, "Hejka tu tomek 123 elo @");
-
-        //printImage(result, "out");
-
         while (true)
         {
                 output = createEmptyImage();
@@ -23,14 +19,13 @@ int main()
                 printQuestionForPath();
                 scanPath(path);
                 tree = convertExpressionToTree(expression);
-                generateBitmap(alphabet, tree, &output);
+                generateBitmapFromTree(alphabet, tree, &output, 1.0);
                 printImage(output, path);
-                printf("Debug tree: "); // DEBUG
+                printf("Debug tree: ");  // DEBUG
                 generateTextDEBUG(tree); //DEBUG
-                printf("\n"); //DEBUG
+                printf("\n");            //DEBUG
                 printDoneAndQuestionForAgain();
-                if (!scanIfAgain())
-                        break;
+                scanIfAgain();
         }
         return 0;
 }

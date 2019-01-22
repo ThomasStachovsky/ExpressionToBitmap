@@ -41,6 +41,7 @@ int minInt(int a, int b)
 
 void clearStdin()
 {
-int c;
-while ( (c = getchar()) != '\n' && c != EOF ) { }
+        char c;
+        while ((c = getchar()) != '\n' && c != EOF)
+                ;
 }

@@ -21,10 +21,14 @@ typedef struct image
     pixel *map;
 } image;
 
-void generateBitmap(image *alphabet, node *current_node, image *output);
+void generateBitmapFromTree(image *alphabet, node *current_node, image *output, double scale);
 image generateBitmapFromTextDEBUG(image *alphabet, const char *expression); //DEBUG
 image mergeBitmap(image left, image right);
-void getTypeP6(char *magic_number);
+image mergeBitmapAndFreeMemory(image left, image right);
+image mergeDownscaledBitmap(image *alphabet, image left, image right, double scale);
+void deleteBitmap(image *bitmap);
+void setTypeP6(char *magic_number);
 image createEmptyImage();
+image createDownscaledImage(image original, double scale);
 bool isImageEmpty(image candidate);
 image copyImage(image original);

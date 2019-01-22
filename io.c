@@ -55,13 +55,13 @@ void scanPath(char *path)
     }
     if (path_iterator == 0)
     {
-        printf("Empty expression, nothing to print.\nPress any key to exit...");
+        printf(RED "Empty path, nothing to print.\nPress any key to exit..." RESET);
         getchar();
         exit(0);
     }
     else if (path_iterator == STRING_SIZE)
     {
-        printf("The expression is too long.\nPress any key to exit...");
+        printf(RED "The path is too long.\nPress any key to exit..." RESET);
         getchar();
         exit(0);
     }
@@ -71,24 +71,21 @@ void scanPath(char *path)
 
 void printDoneAndQuestionForAgain()
 {
-    printf(GREEN "Debug: Printed. Press y/Y to print another expression or n/N to exit..." RESET);
+    printf(GREEN "Debug: Printed. Press y/Y to print another expression or n/N to exit...\n" RESET);
 }
 
-bool scanIfAgain()
+void scanIfAgain()
 {
-    char character = getchar();
+    char character;
     while (true)
     {
         character = getchar();
-        character = getchar();
-        printf("%c",character);
+        clearStdin();
         if (character == 'y' || character == 'Y')
-            return true;
+            return;
         else if (character == 'n' || character == 'N')
-            return false;
-        
+            exit(0);
         printf("I do not understand. Type y/Y or n/N\n");
-        getchar();
     }
 }
 
@@ -108,12 +105,12 @@ image *scanAlphabet()
     image *alphabet = (image *)malloc(sizeof(image) * 256);
     char filename[STRING_SIZE];
     const char *EXTENSION = ".ppm";
-    const char *SLASH_FILE_NAME = "SLASH";
+    const char *SLASH_FILENAME = "SLASH";
     const char *ALPHABET_DIRECTORY = "./alphabet/";
     for (int i = 1; i < 256; i++)
     {
         if (i == '/')
-            sprintf(filename, "%s%s%s", ALPHABET_DIRECTORY, SLASH_FILE_NAME, EXTENSION);
+            sprintf(filename, "%s%s%s", ALPHABET_DIRECTORY, SLASH_FILENAME, EXTENSION);
         else
             sprintf(filename, "%s%c%s", ALPHABET_DIRECTORY, i, EXTENSION);
         if (doesFileExist(filename))
