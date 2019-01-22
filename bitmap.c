@@ -14,7 +14,7 @@ void generateBitmap(image *alphabet, node *current_node, image *output)
     if (current_node->value.type == OPERATOR)
     {
         if ((current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0])))
-            (*output) = mergeBitmap(*output, alphabet['(']);
+            *output = (mergeBitmap(*output, alphabet['(']));
 
         generateBitmap(alphabet, current_node->left, output);
 
@@ -90,9 +90,15 @@ void getTypeP6(char *magic_number)
     magic_number[1] = '6';
 }
 
-void createEmptyImage(image empty)
+image createEmptyImage()
 {
-    empty.map = NULL;
+    image result;
+    result.magic_number[0]='\0';
+    result.height=0;
+    result.width=0;
+    result.maxval=255;
+    result.map = NULL;
+    return result;
 }
 
 image copyImage(image original)
@@ -101,6 +107,7 @@ image copyImage(image original)
     getTypeP6(clone.magic_number);
     clone.width = original.width;
     clone.height = original.height;
+    clone.maxval = original.maxval;
     clone.map = (pixel *)malloc(clone.width * clone.height * sizeof(pixel));
     for (int i = 0; i < clone.width * clone.height; i++)
         clone.map[i] = original.map[i];
@@ -108,7 +115,7 @@ image copyImage(image original)
 }
 bool isImageEmpty(image candidate)
 {
-    if (candidate.map = NULL)
+    if (candidate.map == NULL)
         return true;
     else
         return false;

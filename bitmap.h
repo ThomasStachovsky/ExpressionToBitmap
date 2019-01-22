@@ -25,6 +25,6 @@ void generateBitmap(image *alphabet, node *current_node, image *output);
 image generateBitmapFromTextDEBUG(image *alphabet, const char *expression); //DEBUG
 image mergeBitmap(image left, image right);
 void getTypeP6(char *magic_number);
-void createEmptyImage(image empty);
+image createEmptyImage();
 bool isImageEmpty(image candidate);
 image copyImage(image original);

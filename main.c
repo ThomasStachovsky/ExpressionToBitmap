@@ -11,20 +11,25 @@ int main()
         char expression[STRING_SIZE];
         char path[STRING_SIZE];
 
-        image result = generateBitmapFromTextDEBUG(alphabet, "Hejka tu tomek 123 elo @");
+        //image result = generateBitmapFromTextDEBUG(alphabet, "Hejka tu tomek 123 elo @");
 
-        printImage(result, "out");
+        //printImage(result, "out");
 
         while (true)
         {
-                createEmptyImage(output);
+                output = createEmptyImage();
+                //output = copyImage(alphabet['f']);
+                if(isImageEmpty(output))
+                printf("\nPUSTY\n");
+                image new = mergeBitmap(output,alphabet['r']);
+                printImage(new,"zbyszek");
                 printGettingStarted();
                 scanExpression(expression);
                 printQuestionForPath();
                 scanPath(path);
                 tree = convertExpressionToTree(expression);
-                //generateBitmap(alphabet, tree, &output);
-                //printImage(output, path);
+                generateBitmap(alphabet, tree, &output);
+                printImage(output, path);
                 generateTextDEBUG(tree);
                 printDoneAndQuestionForAgain();
                 if (!scanIfAgain())
