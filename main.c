@@ -17,13 +17,14 @@ int main()
 
         while (true)
         {
+                createEmptyImage(output);
                 printGettingStarted();
                 scanExpression(expression);
                 printQuestionForPath();
                 scanPath(path);
                 tree = convertExpressionToTree(expression);
-                //output = generateBitmap(alphabet, tree);
-                //printImage(output, path);
+                generateBitmap(alphabet, tree, &output);
+                printImage(output, path);
                 printDoneAndQuestionForAgain();
                 if (!scanIfAgain())
                         break;

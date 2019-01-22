@@ -39,6 +39,14 @@ bool isOperator(char character)
                 return false;
 }
 
+bool commutative(char operator)
+{
+        if (operator== '-' || operator== '/' || operator== FUNCTION || operator== '^' || operator== '_' || operator== '<' || operator== '>')
+                return false;
+        else
+                return true;
+}
+
 int weight(char operator)
 {
         if (operator== FUNCTION)

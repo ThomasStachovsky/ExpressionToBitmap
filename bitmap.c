@@ -6,12 +6,41 @@
 
 #include "bitmap.h"
 
-/*
-image generateBitmap(image *alphabet, node *tree)
+void generateBitmap(image *alphabet, node *current_node, image *output)
 {
+    if (current_node == NULL)
+        return;
 
+    if (current_node->value.type == OPERATOR)
+    {
+        if ((current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0])))
+            (*output) = mergeBitmap(*output, alphabet['(']);
 
-}*/
+        generateBitmap(alphabet, current_node->left, output);
+
+        if ((current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0])))
+            (*output) = mergeBitmap(*output, alphabet[')']);
+        (*output) = mergeBitmap(*output, alphabet[current_node->value.expression[0]]);
+
+        if ((current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0])) ||
+            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0])))
+            (*output) = mergeBitmap(*output, alphabet['(']);
+
+        generateBitmap(alphabet, current_node->right, output);
+        if ((current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0])) ||
+            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0])))
+            (*output) = mergeBitmap(*output, alphabet[')']);
+    }
+    else
+    {
+        unsigned int iter = 0;
+        while (current_node->value.expression[iter] != '\0')
+        {
+            (*output) = mergeBitmap(*output, alphabet[current_node->value.expression[iter]]);
+            iter++;
+        }
+    }
+}
 
 image generateBitmapFromTextDEBUG(image *alphabet, const char *expression)
 {
@@ -27,10 +56,10 @@ image generateBitmapFromTextDEBUG(image *alphabet, const char *expression)
 
 image mergeBitmap(image left, image right)
 {
-    if (left.map == NULL)
-        return right;
-    if (right.map == NULL)
-        return left;
+    if (isImageEmpty(left))
+        return copyImage(right);
+    if (isImageEmpty(right))
+        return copyImage(left);
     image result;
     getTypeP6(result.magic_number);
     printf("\nLEFT %d RIGHT %d MAXINT %d\n", left.height, right.height, maxInt(left.height, right.height));
@@ -61,9 +90,21 @@ void getTypeP6(char *magic_number)
     magic_number[1] = '6';
 }
 
-void createImage(image empty)
+void createEmptyImage(image empty)
 {
     empty.map = NULL;
+}
+
+image copyImage(image original)
+{
+    image clone;
+    getTypeP6(clone.magic_number);
+    clone.width = original.width;
+    clone.height = original.height;
+    clone.map = (pixel *)malloc(clone.width * clone.height * sizeof(pixel));
+    for (int i = 0; i < clone.width * clone.height; i++)
+        clone.map[i] = original.map[i];
+    return clone;
 }
 bool isImageEmpty(image candidate)
 {

@@ -24,6 +24,7 @@ typedef struct node
 node *createNode(unit object);
 node *operateOnNode(node *left, node *right, unit object);
 
+bool commutative(char operator);
 bool isOperator(char character);
 int weight(char operator);
 int associativity(char operator);
