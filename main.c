@@ -18,11 +18,6 @@ int main()
         while (true)
         {
                 output = createEmptyImage();
-                //output = copyImage(alphabet['f']);
-                if(isImageEmpty(output))
-                printf("\nPUSTY\n");
-                image new = mergeBitmap(output,alphabet['r']);
-                printImage(new,"zbyszek");
                 printGettingStarted();
                 scanExpression(expression);
                 printQuestionForPath();
@@ -30,7 +25,9 @@ int main()
                 tree = convertExpressionToTree(expression);
                 generateBitmap(alphabet, tree, &output);
                 printImage(output, path);
-                generateTextDEBUG(tree);
+                printf("Debug tree: "); // DEBUG
+                generateTextDEBUG(tree); //DEBUG
+                printf("\n"); //DEBUG
                 printDoneAndQuestionForAgain();
                 if (!scanIfAgain())
                         break;

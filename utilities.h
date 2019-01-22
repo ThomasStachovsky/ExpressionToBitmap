@@ -17,3 +17,4 @@ bool isStringEmpty(char *s);
 void clearString(char *s);
 int maxInt(int a, int b);
 int minInt(int a, int b);
+void clearStdin();

@@ -79,13 +79,16 @@ bool scanIfAgain()
     char character = getchar();
     while (true)
     {
-        getchar();
+        character = getchar();
+        character = getchar();
+        printf("%c",character);
         if (character == 'y' || character == 'Y')
             return true;
         else if (character == 'n' || character == 'N')
             return false;
-        else
-            printf("I do not understand. Type y/Y or n/N\n");
+        
+        printf("I do not understand. Type y/Y or n/N\n");
+        getchar();
     }
 }
 
@@ -115,7 +118,6 @@ image *scanAlphabet()
             sprintf(filename, "%s%c%s", ALPHABET_DIRECTORY, i, EXTENSION);
         if (doesFileExist(filename))
         {
-            printf("%s loaded to alphabet.\n", filename); //DEBUG
             FILE *file = fopen(filename, "rb");
             alphabet[i].magic_number[0] = fgetc(file);
             alphabet[i].magic_number[1] = fgetc(file);
@@ -136,6 +138,7 @@ image *scanAlphabet()
             alphabet[i].map = (pixel *)malloc(alphabet[i].width * alphabet[i].height * sizeof(pixel));
             fread(alphabet[i].map, 3 * alphabet[i].width, alphabet[i].height, file);
             fclose(file);
+            //printf("%s loaded to alphabet.\n", filename); //DEBUG
         }
     }
 

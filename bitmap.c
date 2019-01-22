@@ -62,7 +62,7 @@ image mergeBitmap(image left, image right)
         return copyImage(left);
     image result;
     getTypeP6(result.magic_number);
-    printf("\nLEFT %d RIGHT %d MAXINT %d\n", left.height, right.height, maxInt(left.height, right.height));
+    //printf("\nLEFT %d RIGHT %d MAXINT %d\n", left.height, right.height, maxInt(left.height, right.height));
     result.height = maxInt(left.height, right.height);
     result.width = left.width + right.width;
     result.maxval = maxInt(left.maxval, right.maxval);
@@ -80,7 +80,7 @@ image mergeBitmap(image left, image right)
 
     for (int i = 0; i < right.height; i++)
         for (int j = 0; j < right.width; j++)
-            result.map[i * result.width + j + left.width] = right.map[i * right.width + j + left.width];
+            result.map[i * result.width + j + left.width] = right.map[i * right.width + j];
     return result;
 }
 

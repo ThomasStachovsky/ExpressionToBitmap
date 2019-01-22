@@ -1,4 +1,5 @@
 #include <string.h>
+#include <stdio.h>
 
 #include "utilities.h"
 
@@ -36,4 +37,10 @@ int minInt(int a, int b)
                 return a;
         else
                 return b;
+}
+
+void clearStdin()
+{
+int c;
+while ( (c = getchar()) != '\n' && c != EOF ) { }
 }
