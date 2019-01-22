@@ -164,3 +164,32 @@ void printImage(image output, const char *original_path)
     fwrite(output.map, 3 * output.width, output.height, file);
     fclose(file);
 }
+
+void generateTextDEBUG(node *current_node)
+{
+    if (current_node == NULL)
+        return;
+
+    if (current_node->value.type == OPERATOR)
+    {
+        if ((current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0])))
+            printf("(");
+
+        generateTextDEBUG(current_node->left);
+
+        if ((current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0])))
+            printf(")");
+        printf("%c", current_node->value.expression[0]);
+
+        if ((current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0])) ||
+            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0])))
+            printf("(");
+
+        generateTextDEBUG(current_node->right);
+        if ((current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0])) ||
+            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0])))
+            printf(")");
+    }
+    else
+        printf("%s", current_node->value.expression);
+}

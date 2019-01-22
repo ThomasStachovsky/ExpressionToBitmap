@@ -23,8 +23,9 @@ int main()
                 printQuestionForPath();
                 scanPath(path);
                 tree = convertExpressionToTree(expression);
-                generateBitmap(alphabet, tree, &output);
-                printImage(output, path);
+                //generateBitmap(alphabet, tree, &output);
+                //printImage(output, path);
+                generateTextDEBUG(tree);
                 printDoneAndQuestionForAgain();
                 if (!scanIfAgain())
                         break;

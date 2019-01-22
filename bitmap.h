@@ -22,7 +22,7 @@ typedef struct image
 } image;
 
 void generateBitmap(image *alphabet, node *current_node, image *output);
-image generateBitmapFromTextDEBUG(image *alphabet, const char *expression);
+image generateBitmapFromTextDEBUG(image *alphabet, const char *expression); //DEBUG
 image mergeBitmap(image left, image right);
 void getTypeP6(char *magic_number);
 void createEmptyImage(image empty);
