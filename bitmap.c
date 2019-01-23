@@ -60,7 +60,7 @@ image generateBitmapFromTextDEBUG(image *alphabet, const char *expression)
     return sequence[i - 1];
 }
 
-image mergeBitmap(image left, image right)
+image mergeBitmapHorizontal(image left, image right)
 {
     if (isImageEmpty(left))
         return copyImage(right);
@@ -92,7 +92,7 @@ image mergeBitmap(image left, image right)
 
 image mergeBitmapAndFreeMemory(image left, image right)
 {
-    image result = mergeBitmap(left, right);
+    image result = mergeBitmapHorizontal(left, right);
     deleteBitmap(&left);
     return result;
 }
