@@ -10,7 +10,11 @@ int main()
         image output;
         char expression[STRING_SIZE];
         char path[STRING_SIZE];
+        /*image big = generateBitmapFromTextDEBUG(alphabet, "4*sin(34)+23^43423");
+        image small = createDownscaledImage(big, 0.5);
 
+        printImage(big, "big");
+        printImage(small, "small");*/
         while (true)
         {
                 output = createEmptyImage();
@@ -24,6 +28,8 @@ int main()
                 printf("Debug tree: ");  // DEBUG
                 generateTextDEBUG(tree); //DEBUG
                 printf("\n");            //DEBUG
+                deleteTree(tree);
+                deleteBitmap(&output);
                 printDoneAndQuestionForAgain();
                 scanIfAgain();
         }

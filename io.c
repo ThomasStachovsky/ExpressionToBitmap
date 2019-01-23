@@ -146,13 +146,18 @@ void printImage(image output, const char *original_path)
 {
     char path[STRING_SIZE];
     strcpy(path, original_path);
-    const char *EXTENSTION = ".ppm";
-    sprintf(path, "%s%s", path, EXTENSTION);
+    const char *EXTENSION = ".ppm";
+    unsigned int path_length = strlen(path);
+    unsigned int extension_length = strlen(EXTENSION);
+    if (path_length <= extension_length || (path_length > extension_length && (path[path_length - 1] != 'm' || path[path_length - 2] != 'p' || path[path_length - 3] != 'p' || path[path_length - 4] != '.')))
+        sprintf(path, "%s%s", path, EXTENSION);
     if (doesFileExist(path))
     {
         printf(RED "This file already exist. For your safety please type the path again or type another one:\n" RESET);
         scanf("%s", path);
-        sprintf(path, "%s%s", path, EXTENSTION);
+        path_length = strlen(path);
+        if (path_length <= extension_length || (path_length > extension_length && (path[path_length - 1] != 'm' || path[path_length - 2] != 'p' || path[path_length - 3] != 'p' || path[path_length - 4] != '.')))
+            sprintf(path, "%s%s", path, EXTENSION);
         getchar();
     }
 

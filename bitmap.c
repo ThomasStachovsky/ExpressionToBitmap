@@ -48,6 +48,21 @@ image mergeDownscaledBitmap(image *alphabet, image left, image right, double sca
     //
 }
 
+image createDownscaledImage(image original, double scale)
+{
+    image downscaled;
+    downscaled.height = (int)((double)original.height * scale);
+    downscaled.width = (int)((double)original.width * scale);
+    downscaled.maxval = original.maxval;
+    setTypeP6(downscaled.magic_number);
+    downscaled.map = (pixel *)malloc(downscaled.width * downscaled.height * sizeof(pixel));
+    double inversed_scale = 1.0 / scale;
+    for (int i = 0; i < downscaled.height; i++)
+        for (int j = 0; j < downscaled.width; j++)
+            downscaled.map[i * downscaled.width + j] = original.map[(int)((double)i * original.width * inversed_scale + (double)j * inversed_scale)];
+    return downscaled;
+}
+
 image generateBitmapFromTextDEBUG(image *alphabet, const char *expression)
 {
     image sequence[STRING_SIZE];
@@ -87,6 +102,34 @@ image mergeBitmapHorizontal(image left, image right)
     for (int i = 0; i < right.height; i++)
         for (int j = 0; j < right.width; j++)
             result.map[i * result.width + j + left.width] = right.map[i * right.width + j];
+    return result;
+}
+
+image mergeBitmapVertical(image top, image bottom)
+{
+    if (isImageEmpty(top))
+        return copyImage(bottom);
+    if (isImageEmpty(bottom))
+        return copyImage(top);
+    image result;
+    setTypeP6(result.magic_number);
+    result.height = top.height + bottom.height;
+    result.width = maxInt(top.width, bottom.width);
+    result.maxval = maxInt(top.maxval, bottom.maxval);
+    result.map = (pixel *)malloc(result.width * result.height * sizeof(pixel));
+    for (int i = 0; i < result.width * result.height; i++)
+    {
+        result.map[i].red = 255;
+        result.map[i].green = 255;
+        result.map[i].blue = 255;
+    }
+    for (int i = 0; i < top.height; i++)
+        for (int j = 0; j < top.width; j++)
+            result.map[i * result.width + j] = top.map[i * top.width + j];
+
+    for (int i = 0; i < bottom.height; i++)
+        for (int j = 0; j < bottom.width; j++)
+            result.map[i * result.width + j + top.height * result.width] = bottom.map[i * bottom.width + j];
     return result;
 }
 
@@ -132,6 +175,7 @@ image copyImage(image original)
         clone.map[i] = original.map[i];
     return clone;
 }
+
 bool isImageEmpty(image candidate)
 {
     if (candidate.map == NULL)

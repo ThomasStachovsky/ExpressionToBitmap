@@ -31,3 +31,5 @@ int associativity(char operator);
 node *convertExpressionToTree(char *expression);
 unit *convertAlgebraicToRPN(char *expression, unsigned int *rpn_size);
 node *convertRPNToTree(unit *rpn, unsigned int rpn_size);
+void deleteTree(node *current);
+void deleteUnitArray(unit *rpn);

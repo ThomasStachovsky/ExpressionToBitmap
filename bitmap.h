@@ -15,15 +15,16 @@ typedef struct pixel
 typedef struct image
 {
     char magic_number[2];
-    int width;
-    int height;
-    int maxval;
+    unsigned int width;
+    unsigned int height;
+    unsigned int maxval;
     pixel *map;
 } image;
 
 void generateBitmapFromTree(image *alphabet, node *current_node, image *output, double scale);
 image generateBitmapFromTextDEBUG(image *alphabet, const char *expression); //DEBUG
 image mergeBitmapHorizontal(image left, image right);
+image mergeBitmapVertical(image top, image bottom);
 image mergeBitmapAndFreeMemory(image left, image right);
 image mergeDownscaledBitmap(image *alphabet, image left, image right, double scale);
 void deleteBitmap(image *bitmap);

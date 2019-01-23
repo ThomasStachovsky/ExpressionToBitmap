@@ -10,6 +10,7 @@ node *convertExpressionToTree(char *expression)
         unsigned int rpn_size;
         unit *rpn = convertAlgebraicToRPN(expression, &rpn_size);
         node *root_of_tree = convertRPNToTree(rpn, rpn_size);
+        deleteUnitArray(rpn);
         return root_of_tree;
 }
 
@@ -29,6 +30,22 @@ node *operateOnNode(node *left, node *right, unit object)
         result->left = left;
         result->right = right;
         return result;
+}
+
+void deleteTree(node *current)
+{
+        if (current->left != NULL)
+                deleteTree(current->left);
+
+        if (current->right != NULL)
+                deleteTree(current->right);
+
+        free(current);
+}
+
+void deleteUnitArray(unit *array)
+{
+        free(array);
 }
 
 bool isOperator(char character)
