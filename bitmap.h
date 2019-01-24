@@ -25,7 +25,7 @@ void generateBitmapFromTree(image *alphabet, node *current_node, image *output, 
 image generateBitmapFromTextDEBUG(image *alphabet, const char *expression); //DEBUG
 image mergeBitmapHorizontal(image left, image right);
 image mergeBitmapVertical(image top, image bottom);
-image mergeBitmapAndFreeMemory(image left, image right);
+image mergeBitmapAndFreeMemory(image left, image right, double scale);
 image mergeDownscaledBitmap(image *alphabet, image left, image right, double scale);
 void deleteBitmap(image *bitmap);
 void setTypeP6(char *magic_number);

@@ -192,7 +192,6 @@ node *convertRPNToTree(unit *rpn, unsigned int rpn_size)
         node *stack[RPN_ARRAY_SIZE];
 
         for (unsigned int rpn_iterator = 0; rpn_iterator < rpn_size; rpn_iterator++)
-        {
                 if (rpn[rpn_iterator].type == OPERATOR)
                 {
                         stack[stack_iterator - 2] = operateOnNode(stack[stack_iterator - 2], stack[stack_iterator - 1], rpn[rpn_iterator]);
@@ -203,6 +202,5 @@ node *convertRPNToTree(unit *rpn, unsigned int rpn_size)
                         stack[stack_iterator] = createNode(rpn[rpn_iterator]);
                         stack_iterator++;
                 }
-        }
         return stack[stack_iterator - 1];
 }
