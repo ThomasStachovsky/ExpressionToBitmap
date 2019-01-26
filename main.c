@@ -15,13 +15,13 @@ int main()
 
         //printImage(big, "big");
         //printImage(small, "small");
-        image big2 = copyImage(big);
-        image hej;
-        image small = createDownscaledImage(big2, 0.4);
-        printImage(small, "path");
-        hej = mergeBitmapHorizontal(big, small);
+        // image big2 = copyImage(big);
+        //image hej;
+        //image small = createDownscaledImage(big2, 0.4);
+        //printImage(small, "path");
+        //hej = mergeBitmapHorizontal(big, small);
         //image hej = mergeBitmapAndFreeMemory(big, big2, 0.8);
-        printImage(hej, "merged");
+        //printImage(hej, "merged");
         while (true)
         {
                 output = createEmptyImage();

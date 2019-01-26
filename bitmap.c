@@ -76,12 +76,9 @@ image createDownscaledImage(image original, double scale)
     downscaled.maxval = original.maxval;
     setTypeP6(downscaled.magic_number);
     downscaled.map = (pixel *)malloc(downscaled.width * downscaled.height * sizeof(pixel));
-    double inverted_scale = 1.0 / scale;
-    //for (int i = 0; i < downscaled.height; i++)
-    //   for (int j = 0; j < downscaled.width; j++)
-    //        downscaled.map[i * downscaled.width + j] = original.map[(int)((double)i * original.width * inverted_scale + (double)j * inverted_scale)];
-    for (int i = 0; i < downscaled.height * downscaled.width; i++)
-        downscaled.map[i] = original.map[(int)((double)i * inverted_scale * inverted_scale)];
+    for (int i = 0; i < original.height; i++)
+        for (int j = 0; j < original.width; j++)
+            downscaled.map[(int)(i * scale) * downscaled.width + (int)(j * scale)] = original.map[i * original.width + j];
     return downscaled;
 }
 
