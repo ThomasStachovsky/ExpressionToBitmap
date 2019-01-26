@@ -14,7 +14,7 @@ void generateBitmapFromTree(image *alphabet, node *current_node, image *output, 
     if (current_node->value.type == OPERATOR)
     {
         if (current_node->value.expression[0] == '^')
-            new_scale = 0.7;
+            new_scale = 0.49 * scale;
         if ((current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0])))
         {
 
@@ -35,7 +35,7 @@ void generateBitmapFromTree(image *alphabet, node *current_node, image *output, 
         }
 
         if ((current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0])) ||
-            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0])))
+            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0]) && associativity(current_node->right->value.expression[0]) == LEFT_ASSOCIATIVITY))
         {
             image temp = mergeBitmapAndFreeMemory(copyImage(*output), alphabet['('], new_scale);
             *output = copyImage(temp);
@@ -43,7 +43,7 @@ void generateBitmapFromTree(image *alphabet, node *current_node, image *output, 
         generateBitmapFromTree(alphabet, current_node->right, output, new_scale);
 
         if ((current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0])) ||
-            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0])))
+            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0]) && associativity(current_node->right->value.expression[0]) == LEFT_ASSOCIATIVITY))
         {
             image temp = mergeBitmapAndFreeMemory(copyImage(*output), alphabet[')'], new_scale);
             *output = copyImage(temp);
@@ -78,7 +78,7 @@ image createDownscaledImage(image original, double scale)
     downscaled.map = (pixel *)malloc(downscaled.width * downscaled.height * sizeof(pixel));
     for (int i = 0; i < original.height; i++)
         for (int j = 0; j < original.width; j++)
-            downscaled.map[(int)(i * scale) * downscaled.width + (int)(j * scale)] = original.map[i * original.width + j];
+            downscaled.map[minInt(downscaled.height - 1, (int)(i * scale)) * downscaled.width + minInt(downscaled.width - 1, (int)(j * scale))] = original.map[i * original.width + j];
     return downscaled;
 }
 
