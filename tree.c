@@ -82,7 +82,7 @@ int weight(char operator)
 
 int associativity(char operator)
 {
-        if (operator== '^' || operator== FUNCTION)
+        if (operator== '^' || operator== FUNCTION || operator== '_')
                 return RIGHT_ASSOCIATIVITY;
         else
                 return LEFT_ASSOCIATIVITY;

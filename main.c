@@ -30,7 +30,7 @@ int main()
                 printQuestionForPath();
                 scanPath(path);
                 tree = convertExpressionToTree(expression);
-                generateBitmapFromTree(alphabet, tree, &output, 1.0);
+                output = generateBitmapFromTree(alphabet, tree, 1.0);
                 printImage(output, path);
                 printf("Debug tree: ");  // DEBUG
                 generateTextDEBUG(tree); //DEBUG
