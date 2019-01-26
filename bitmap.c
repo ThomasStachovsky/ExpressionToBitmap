@@ -13,7 +13,7 @@ void generateBitmapFromTree(image *alphabet, node *current_node, image *output, 
     double new_scale = scale;
     if (current_node->value.type == OPERATOR)
     {
-        if (current_node->value.expression[0] == '^')
+        if (current_node->value.expression[0] == '^' || current_node->value.expression[0] == '_')
             new_scale = 0.49 * scale;
         if ((current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0])))
         {
@@ -28,9 +28,9 @@ void generateBitmapFromTree(image *alphabet, node *current_node, image *output, 
             image temp = mergeBitmapAndFreeMemory(copyImage(*output), alphabet[')'], scale);
             *output = copyImage(temp);
         }
-        if (current_node->value.expression[0] != '^')
+        if (current_node->value.expression[0] != '^' && current_node->value.expression[0] != '@' && current_node->value.expression[0] != '_')
         {
-            image temp = mergeBitmapAndFreeMemory(copyImage(*output), alphabet[current_node->value.expression[0]], scale);
+            image temp = mergeBitmapAndFreeMemory(copyImage(*output), alphabet[(int)current_node->value.expression[0]], scale);
             *output = copyImage(temp);
         }
 
@@ -54,7 +54,7 @@ void generateBitmapFromTree(image *alphabet, node *current_node, image *output, 
         unsigned int iter = 0;
         while (current_node->value.expression[iter] != '\0')
         {
-            image temp = mergeBitmapAndFreeMemory(copyImage(*output), alphabet[current_node->value.expression[iter]], new_scale);
+            image temp = mergeBitmapAndFreeMemory(copyImage(*output), alphabet[(int)current_node->value.expression[iter]], new_scale);
             *output = copyImage(temp);
 
             iter++;
@@ -62,11 +62,13 @@ void generateBitmapFromTree(image *alphabet, node *current_node, image *output, 
     }
 }
 
+#if 0
 image mergeDownscaledBitmap(image *alphabet, image left, image right, double scale)
 {
     //image downscaled = createDownscaledImage(right, scale);
     //
 }
+#endif
 
 image createDownscaledImage(image original, double scale)
 {
@@ -76,8 +78,8 @@ image createDownscaledImage(image original, double scale)
     downscaled.maxval = original.maxval;
     setTypeP6(downscaled.magic_number);
     downscaled.map = (pixel *)malloc(downscaled.width * downscaled.height * sizeof(pixel));
-    for (int i = 0; i < original.height; i++)
-        for (int j = 0; j < original.width; j++)
+    for (unsigned int i = 0; i < original.height; i++)
+        for (unsigned int j = 0; j < original.width; j++)
             downscaled.map[minInt(downscaled.height - 1, (int)(i * scale)) * downscaled.width + minInt(downscaled.width - 1, (int)(j * scale))] = original.map[i * original.width + j];
     return downscaled;
 }
@@ -86,10 +88,10 @@ image generateBitmapFromTextDEBUG(image *alphabet, const char *expression)
 {
     image sequence[STRING_SIZE];
     unsigned int length = strlen(expression);
-    int i;
+    unsigned int i;
     for (i = 1; i < STRING_SIZE && i <= length; i++)
     {
-        sequence[i] = mergeBitmapAndFreeMemory(sequence[i - 1], alphabet[expression[i - 1]], 1.0);
+        sequence[i] = mergeBitmapAndFreeMemory(sequence[i - 1], alphabet[(int)expression[i - 1]], 1.0);
     }
     return sequence[i - 1];
 }
@@ -102,24 +104,23 @@ image mergeBitmapHorizontal(image left, image right)
         return copyImage(left);
     image result;
     setTypeP6(result.magic_number);
-    //printf("\nLEFT %d RIGHT %d MAXINT %d\n", left.height, right.height, maxInt(left.height, right.height));
     result.height = maxInt(left.height, right.height);
     result.width = left.width + right.width;
     result.maxval = maxInt(left.maxval, right.maxval);
     result.map = (pixel *)malloc(result.width * result.height * sizeof(pixel));
-    for (int i = 0; i < result.width * result.height; i++)
+    for (unsigned int i = 0; i < result.width * result.height; i++)
     {
         result.map[i].red = 255;
         result.map[i].green = 255;
         result.map[i].blue = 255;
     }
 
-    for (int i = 0; i < left.height; i++)
-        for (int j = 0; j < left.width; j++)
+    for (unsigned int i = 0; i < left.height; i++)
+        for (unsigned int j = 0; j < left.width; j++)
             result.map[i * result.width + j] = left.map[i * left.width + j];
 
-    for (int i = 0; i < right.height; i++)
-        for (int j = 0; j < right.width; j++)
+    for (unsigned int i = 0; i < right.height; i++)
+        for (unsigned int j = 0; j < right.width; j++)
             result.map[i * result.width + j + left.width] = right.map[i * right.width + j];
     return result;
 }
@@ -136,18 +137,18 @@ image mergeBitmapVertical(image top, image bottom)
     result.width = maxInt(top.width, bottom.width);
     result.maxval = maxInt(top.maxval, bottom.maxval);
     result.map = (pixel *)malloc(result.width * result.height * sizeof(pixel));
-    for (int i = 0; i < result.width * result.height; i++)
+    for (unsigned int i = 0; i < result.width * result.height; i++)
     {
         result.map[i].red = 255;
         result.map[i].green = 255;
         result.map[i].blue = 255;
     }
-    for (int i = 0; i < top.height; i++)
-        for (int j = 0; j < top.width; j++)
+    for (unsigned int i = 0; i < top.height; i++)
+        for (unsigned int j = 0; j < top.width; j++)
             result.map[i * result.width + j] = top.map[i * top.width + j];
 
-    for (int i = 0; i < bottom.height; i++)
-        for (int j = 0; j < bottom.width; j++)
+    for (unsigned int i = 0; i < bottom.height; i++)
+        for (unsigned int j = 0; j < bottom.width; j++)
             result.map[i * result.width + j + top.height * result.width] = bottom.map[i * bottom.width + j];
     return result;
 }
@@ -192,7 +193,7 @@ image copyImage(image original)
     clone.height = original.height;
     clone.maxval = original.maxval;
     clone.map = (pixel *)malloc(clone.width * clone.height * sizeof(pixel));
-    for (int i = 0; i < clone.width * clone.height; i++)
+    for (unsigned int i = 0; i < clone.width * clone.height; i++)
         clone.map[i] = original.map[i];
     return clone;
 }
