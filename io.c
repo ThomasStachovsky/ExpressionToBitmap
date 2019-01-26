@@ -135,7 +135,6 @@ image *scanAlphabet()
             alphabet[i].map = (pixel *)malloc(alphabet[i].width * alphabet[i].height * sizeof(pixel));
             fread(alphabet[i].map, 3 * alphabet[i].width, alphabet[i].height, file);
             fclose(file);
-            //printf("%s loaded to alphabet.\n", filename); //DEBUG
         }
     }
 
