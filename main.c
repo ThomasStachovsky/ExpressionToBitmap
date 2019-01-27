@@ -11,18 +11,15 @@ int main()
         char expression[STRING_SIZE];
         char path[STRING_SIZE];
 
-        /*image one = generateBitmapFromTextDEBUG(alphabet, "H");
-        image two = generateBitmapFromTextDEBUG(alphabet, "P");
-        image merged = mergeBitmapHorizontal(one, two, BASED, 155, 11);
-        printImage(merged, "test");*/
-
         while (true)
         {
                 output = createEmptyImage();
                 printGettingStarted();
-                scanExpression(expression);
+                if (!scanExpression(expression))
+                        break;
                 printQuestionForPath();
-                scanPath(path);
+                if (!scanPath(path))
+                        break;
                 tree = convertExpressionToTree(expression);
                 output = generateBitmapFromTree(alphabet, tree);
                 printImage(output, path);
@@ -32,7 +29,14 @@ int main()
                 deleteTree(tree);
                 deleteBitmap(&output);
                 printDoneAndQuestionForAgain();
-                scanIfAgain();
+                if (!scanIfAgain())
+                        break;
         }
+
+        for (int i = 0; i < 256; i++)
+                if (!isImageEmpty(alphabet[i]))
+                        deleteBitmap(&alphabet[i]);
+        free(alphabet);
+
         return 0;
 }

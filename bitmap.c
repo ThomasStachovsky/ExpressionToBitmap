@@ -31,34 +31,67 @@ image generateBitmapFromTreeUtil(image *alphabet, node *current_node, double sca
 
         image left_child = generateBitmapFromTreeUtil(alphabet, current_node->left, scale, &baseline_left);
         image right_child = generateBitmapFromTreeUtil(alphabet, current_node->right, new_scale, &baseline_right);
+
+        image left_part = createEmptyImage();
+        image right_part = createEmptyImage();
+
+        image left_bracket = createEmptyImage();
+        image right_bracket = createEmptyImage();
+
         unsigned int baseline_symbol = (unsigned int)(scale * alphabet['a'].height / 2.0);
+        unsigned int baseline_left_bracket;
+        unsigned int baseline_right_bracket;
+
+        unsigned int higher_child_height = maxInt(left_child.height, right_child.height);
 
         if (current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0]) && current_node->value.expression[0] != '/')
-            result = mergeBitmapAndFreeMemory(result, alphabet['('], scale, '(', baseline_left, baseline_symbol, left_child.height);
+        {
+            left_bracket = mergeBitmapAndFreeMemory(left_bracket, alphabet['('], scale, '(', baseline_left, baseline_symbol, higher_child_height);
+            right_bracket = mergeBitmapAndFreeMemory(right_bracket, alphabet[')'], scale, ')', baseline_left, baseline_symbol, higher_child_height);
+        }
+        baseline_left_bracket = left_bracket.height / 2;
+        baseline_right_bracket = right_bracket.height / 2;
 
-        result = mergeBitmapAndFreeMemory(result, left_child, 1.0, OTHER, baseline_left, baseline_right, 0);
+        left_part = mergeBitmapAndFreeMemory(left_part, left_child, 1.0, OTHER, baseline_left, baseline_right, 0);
 
-        if (current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0]) && current_node->value.expression[0] != '/')
-            result = mergeBitmapAndFreeMemory(result, alphabet[')'], scale, ')', baseline_left, baseline_symbol, left_child.height);
+        left_part = mergeBitmapAndFreeMemory(left_part, right_bracket, 1.0, OTHER, baseline_left, baseline_right_bracket, 0);
+        baseline_left = maxInt(baseline_left, baseline_right_bracket);
+        image temp_to_deletion = left_part;
+        left_part = mergeBitmapAndFreeMemory(left_bracket, left_part, 1.0, OTHER, baseline_left_bracket, baseline_left, 0);
+        deleteBitmap(&temp_to_deletion);
+        baseline_left = maxInt(baseline_left, baseline_left_bracket);
 
         if (current_node->value.expression[0] != '^' && current_node->value.expression[0] != FUNCTION && current_node->value.expression[0] != '_' && current_node->value.expression[0] != '/')
-            result = mergeBitmapAndFreeMemory(result, alphabet[(int)current_node->value.expression[0]], scale, OTHER, baseline_left, baseline_symbol, 0);
+            left_part = mergeBitmapAndFreeMemory(left_part, alphabet[(int)current_node->value.expression[0]], scale, OTHER, baseline_left, baseline_symbol, 0);
+
+        deleteBitmap(&right_bracket);
+        left_bracket = createEmptyImage();
 
         if (current_node->value.expression[0] == FUNCTION || (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0]) && current_node->value.expression[0] != '^' && current_node->value.expression[0] != '_' && current_node->value.expression[0] != '/') ||
             (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0]) && associativity(current_node->right->value.expression[0]) == LEFT_ASSOCIATIVITY && current_node->value.expression[0] != '/'))
-            result = mergeBitmapAndFreeMemory(result, alphabet['('], new_scale, '(', baseline_left, baseline_symbol, right_child.height);
+        {
+            left_bracket = mergeBitmapAndFreeMemory(left_bracket, alphabet['('], new_scale, '(', baseline_left, baseline_symbol, higher_child_height);
+            right_bracket = mergeBitmapAndFreeMemory(right_bracket, alphabet[')'], new_scale, ')', baseline_left, baseline_symbol, higher_child_height);
+        }
+        baseline_left_bracket = left_bracket.height / 2;
+        baseline_right_bracket = right_bracket.height / 2;
+        right_part = mergeBitmapAndFreeMemory(right_part, right_child, 1.0, OTHER, baseline_left, baseline_right, 0);
 
-        result = mergeBitmapAndFreeMemory(result, right_child, 1.0, current_node->value.expression[0], baseline_left, baseline_right, 0);
+        right_part = mergeBitmapAndFreeMemory(right_part, right_bracket, 1.0, OTHER, baseline_right, baseline_right_bracket, 0);
+        baseline_right = maxInt(baseline_right, baseline_right_bracket);
+        temp_to_deletion = right_part;
+        right_part = mergeBitmapAndFreeMemory(left_bracket, right_part, 1.0, OTHER, baseline_left_bracket, baseline_right, 0);
+        deleteBitmap(&temp_to_deletion);
+        baseline_right = maxInt(baseline_right, baseline_left_bracket);
 
-        if (current_node->value.expression[0] == FUNCTION || (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0]) && current_node->value.expression[0] != '^' && current_node->value.expression[0] != '_' && current_node->value.expression[0] != '/') ||
-            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0]) && associativity(current_node->right->value.expression[0]) == LEFT_ASSOCIATIVITY && current_node->value.expression[0] != '/'))
-            result = mergeBitmapAndFreeMemory(result, alphabet[')'], new_scale, ')', baseline_left, baseline_symbol, right_child.height);
+        result = mergeBitmapAndFreeMemory(left_part, right_part, 1.0, current_node->value.expression[0], baseline_left, baseline_right, 0);
 
         if (current_node->value.expression[0] == '/')
             (*baseline_parent) = left_child.height;
         else
             (*baseline_parent) = maxInt(baseline_left, baseline_right);
-
+        deleteBitmap(&right_bracket);
+        deleteBitmap(&right_part);
         deleteBitmap(&left_child);
         deleteBitmap(&right_child);
     }
@@ -242,10 +275,8 @@ image mergeBitmapAndFreeMemory(image replaced, image added, double scale, char o
     }
     else
         result = mergeBitmapHorizontal(replaced, downscaled, BASED, baseline_left, baseline_right);
-
     deleteBitmap(&replaced);
     deleteBitmap(&downscaled);
-    printf("%u", child_height);
     return result;
 }
 
@@ -272,7 +303,10 @@ image createUpscaledImageVertically(image original, double scale)
 
 void deleteBitmap(image *bitmap)
 {
-    free(bitmap->map);
+    if (bitmap == NULL)
+        return;
+    if (bitmap->map != NULL)
+        free(bitmap->map);
     *bitmap = createEmptyImage();
 }
 

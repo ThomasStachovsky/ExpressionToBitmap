@@ -10,7 +10,7 @@ void printGettingStarted()
     printf("Debug: Type the expression:\n");
 }
 
-void scanExpression(char *expression)
+bool scanExpression(char *expression)
 {
     char character;
     unsigned int expression_iterator = 0;
@@ -25,16 +25,16 @@ void scanExpression(char *expression)
     {
         printf("Empty expression, nothing to print.\nPress any key to exit...");
         getchar();
-        exit(0);
+        return false;
     }
     else if (expression_iterator == STRING_SIZE)
     {
         printf("The expression is too long.\nPress any key to exit...");
         getchar();
-        exit(0);
+        return false;
     }
-    else
-        expression[expression_iterator] = '\0';
+    expression[expression_iterator] = '\0';
+    return true;
 }
 
 void printQuestionForPath()
@@ -42,7 +42,7 @@ void printQuestionForPath()
     printf("Debug: Type the path:\n");
 }
 
-void scanPath(char *path)
+bool scanPath(char *path)
 {
     char character;
     unsigned int path_iterator = 0;
@@ -57,16 +57,16 @@ void scanPath(char *path)
     {
         printf(RED "Empty path, nothing to print.\nPress any key to exit..." RESET);
         getchar();
-        exit(0);
+        return false;
     }
     else if (path_iterator == STRING_SIZE)
     {
         printf(RED "The path is too long.\nPress any key to exit..." RESET);
         getchar();
-        exit(0);
+        return false;
     }
-    else
-        path[path_iterator] = '\0';
+    path[path_iterator] = '\0';
+    return true;
 }
 
 void printDoneAndQuestionForAgain()
@@ -74,7 +74,7 @@ void printDoneAndQuestionForAgain()
     printf(GREEN "Debug: Printed. Press y/Y to print another expression or n/N to exit...\n" RESET);
 }
 
-void scanIfAgain()
+bool scanIfAgain()
 {
     char character;
     while (true)
@@ -82,9 +82,9 @@ void scanIfAgain()
         character = getchar();
         clearStdin();
         if (character == 'y' || character == 'Y')
-            return;
+            return true;
         else if (character == 'n' || character == 'N')
-            exit(0);
+            return false;
         printf("I do not understand. Type y/Y or n/N\n");
     }
 }

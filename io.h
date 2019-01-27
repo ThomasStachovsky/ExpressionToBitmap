@@ -6,11 +6,11 @@
 
 image *scanAlphabet();
 void printGettingStarted();
-void scanExpression(char *expression);
+bool scanExpression(char *expression);
 void printQuestionForPath();
-void scanPath(char *path);
+bool scanPath(char *path);
 void printDoneAndQuestionForAgain();
-void scanIfAgain();
+bool scanIfAgain();
 bool doesFileExist(char *filename);
 image *scanAlphabet();
 void printImage(image bitmap, const char *path);
