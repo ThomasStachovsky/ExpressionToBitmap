@@ -10,11 +10,11 @@ int main()
         image output;
         char expression[STRING_SIZE];
         char path[STRING_SIZE];
-
+        printGettingStarted();
         while (true)
         {
+                printTypeExpression();
                 output = createEmptyImage();
-                printGettingStarted();
                 if (!scanExpression(expression))
                         break;
                 printQuestionForPath();
@@ -23,9 +23,6 @@ int main()
                 tree = convertExpressionToTree(expression);
                 output = generateBitmapFromTree(alphabet, tree);
                 printImage(output, path);
-                printf("Debug tree: ");  // DEBUG
-                generateTextDEBUG(tree); //DEBUG
-                printf("\n");            //DEBUG
                 deleteTree(tree);
                 deleteBitmap(&output);
                 printDoneAndQuestionForAgain();

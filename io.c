@@ -7,7 +7,17 @@
 
 void printGettingStarted()
 {
-    printf("Debug: Type the expression:\n");
+    printf(CYAN "ExpToImg by Tomasz Stachowski\n\n" RESET);
+    printf(YELLOW "Program converts a given mathematical expression to an image.\n");
+    printf("While writing the formula you can use:\n");
+    printf("+ - * / as arithmetic operators\n^ as superscript operator");
+    printf("\n_ as subscript operator\nstrings of letters and digits as variables\n");
+    printf("($2,$3,...,$n) as multivariable functions where $1...n are expressions as arguments and ,(comma) separates them\n= > < as comparators\n\n" RESET);
+}
+
+void printTypeExpression()
+{
+    printf("Type the expression you want to print:\n");
 }
 
 bool scanExpression(char *expression)
@@ -23,13 +33,13 @@ bool scanExpression(char *expression)
     }
     if (expression_iterator == 0)
     {
-        printf("Empty expression, nothing to print.\nPress any key to exit...");
+        printf(RED "Empty expression, nothing to print.\nPress any key to exit..." RESET);
         getchar();
         return false;
     }
     else if (expression_iterator == STRING_SIZE)
     {
-        printf("The expression is too long.\nPress any key to exit...");
+        printf(RED "The expression is too long.\nPress any key to exit..." RESET);
         getchar();
         return false;
     }
@@ -39,7 +49,7 @@ bool scanExpression(char *expression)
 
 void printQuestionForPath()
 {
-    printf("Debug: Type the path:\n");
+    printf("Type the name or path/name for the output file:\n");
 }
 
 bool scanPath(char *path)
@@ -71,7 +81,7 @@ bool scanPath(char *path)
 
 void printDoneAndQuestionForAgain()
 {
-    printf(GREEN "Debug: Printed. Press y/Y to print another expression or n/N to exit...\n" RESET);
+    printf(GREEN "Expression printed. Press y/Y to print another expression or n/N to exit...\n" RESET);
 }
 
 bool scanIfAgain()

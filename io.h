@@ -5,6 +5,7 @@
 #include "bitmap.h"
 
 image *scanAlphabet();
+void printTypeExpression();
 void printGettingStarted();
 bool scanExpression(char *expression);
 void printQuestionForPath();
