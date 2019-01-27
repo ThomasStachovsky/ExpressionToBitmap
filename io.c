@@ -43,6 +43,23 @@ bool scanExpression(char *expression)
         getchar();
         return false;
     }
+    else
+    {
+        unsigned left_brackets = 0, right_brackets = 0;
+        for (unsigned i = 0; i < expression_iterator; i++)
+            if (expression[i] == '(')
+                left_brackets++;
+            else if (expression[i] == ')')
+                right_brackets++;
+
+        if (left_brackets != right_brackets)
+        {
+            printf(RED "There are mismatched parentheses in the expression\nPress any key to exit..." RESET);
+            getchar();
+            return false;
+        }
+    }
+
     expression[expression_iterator] = '\0';
     return true;
 }
