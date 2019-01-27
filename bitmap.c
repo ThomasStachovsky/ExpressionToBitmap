@@ -6,10 +6,17 @@
 
 #include "bitmap.h"
 
-image generateBitmapFromTree(image *alphabet, node *current_node, double scale)
+image generateBitmapFromTree(image *alphabet, node *head_of_tree)
+{
+    unsigned int temp;
+    return generateBitmapFromTreeUtil(alphabet, head_of_tree, 1.0, &temp);
+}
+
+image generateBitmapFromTreeUtil(image *alphabet, node *current_node, double scale, unsigned int *baseline_parent)
 {
     if (current_node == NULL)
         return createEmptyImage();
+    unsigned int baseline_left, baseline_right;
     double new_scale = scale;
     image result = createEmptyImage();
     if (current_node->value.type == OPERATOR)
@@ -18,63 +25,63 @@ image generateBitmapFromTree(image *alphabet, node *current_node, double scale)
             new_scale = 0.5 * scale;
         else if (current_node->value.expression[0] == '/')
         {
-            new_scale = 0.85 * scale;
+            new_scale = 0.8 * scale;
             scale = new_scale;
         }
-        if (current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0]) && current_node->value.expression[0] != '/')
-            result = mergeBitmapAndFreeMemory(result, alphabet['('], scale, '\0');
-        image left_child = generateBitmapFromTree(alphabet, current_node->left, scale);
 
-        result = mergeBitmapAndFreeMemory(result, left_child, 1.0, '\0');
-
-        deleteBitmap(&left_child);
+        image left_child = generateBitmapFromTreeUtil(alphabet, current_node->left, scale, &baseline_left);
+        image right_child = generateBitmapFromTreeUtil(alphabet, current_node->right, new_scale, &baseline_right);
+        unsigned int baseline_symbol = (unsigned int)(scale * alphabet['a'].height / 2.0);
 
         if (current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0]) && current_node->value.expression[0] != '/')
-            result = mergeBitmapAndFreeMemory(result, alphabet[')'], scale, '\0');
+            result = mergeBitmapAndFreeMemory(result, alphabet['('], scale, '(', baseline_left, baseline_symbol, left_child.height);
+
+        result = mergeBitmapAndFreeMemory(result, left_child, 1.0, OTHER, baseline_left, baseline_right, 0);
+
+        if (current_node->left->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->left->value.expression[0]) && current_node->value.expression[0] != '/')
+            result = mergeBitmapAndFreeMemory(result, alphabet[')'], scale, ')', baseline_left, baseline_symbol, left_child.height);
 
         if (current_node->value.expression[0] != '^' && current_node->value.expression[0] != FUNCTION && current_node->value.expression[0] != '_' && current_node->value.expression[0] != '/')
-            result = mergeBitmapAndFreeMemory(result, alphabet[(int)current_node->value.expression[0]], scale, '\0');
+            result = mergeBitmapAndFreeMemory(result, alphabet[(int)current_node->value.expression[0]], scale, OTHER, baseline_left, baseline_symbol, 0);
 
         if (current_node->value.expression[0] == FUNCTION || (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0]) && current_node->value.expression[0] != '^' && current_node->value.expression[0] != '_' && current_node->value.expression[0] != '/') ||
-            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0]) && associativity(current_node->right->value.expression[0]) == LEFT_ASSOCIATIVITY))
-            result = mergeBitmapAndFreeMemory(result, alphabet['('], new_scale, '\0');
+            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0]) && associativity(current_node->right->value.expression[0]) == LEFT_ASSOCIATIVITY && current_node->value.expression[0] != '/'))
+            result = mergeBitmapAndFreeMemory(result, alphabet['('], new_scale, '(', baseline_left, baseline_symbol, right_child.height);
 
-        image right_child = generateBitmapFromTree(alphabet, current_node->right, new_scale);
+        result = mergeBitmapAndFreeMemory(result, right_child, 1.0, current_node->value.expression[0], baseline_left, baseline_right, 0);
 
-        result = mergeBitmapAndFreeMemory(result, right_child, 1.0, current_node->value.expression[0]);
+        if (current_node->value.expression[0] == FUNCTION || (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0]) && current_node->value.expression[0] != '^' && current_node->value.expression[0] != '_' && current_node->value.expression[0] != '/') ||
+            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0]) && associativity(current_node->right->value.expression[0]) == LEFT_ASSOCIATIVITY && current_node->value.expression[0] != '/'))
+            result = mergeBitmapAndFreeMemory(result, alphabet[')'], new_scale, ')', baseline_left, baseline_symbol, right_child.height);
 
+        if (current_node->value.expression[0] == '/')
+            (*baseline_parent) = left_child.height;
+        else
+            (*baseline_parent) = maxInt(baseline_left, baseline_right);
+
+        deleteBitmap(&left_child);
         deleteBitmap(&right_child);
-
-        if (current_node->value.expression[0] == FUNCTION || (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) > weight(current_node->right->value.expression[0]) && current_node->value.expression[0] != '^' && current_node->value.expression[0] != '_' && current_node->value.expression[0] != '/') ||
-            (current_node->right->value.type == OPERATOR && weight(current_node->value.expression[0]) == weight(current_node->right->value.expression[0]) && !commutative(current_node->value.expression[0]) && associativity(current_node->right->value.expression[0]) == LEFT_ASSOCIATIVITY))
-            result = mergeBitmapAndFreeMemory(result, alphabet[')'], new_scale, '\0');
     }
     else
+    {
         for (unsigned int iter = 0; current_node->value.expression[iter] != '\0'; iter++)
-            result = mergeBitmapAndFreeMemory(result, alphabet[(int)current_node->value.expression[iter]], new_scale, '\0');
-
+            result = mergeBitmapAndFreeMemory(result, alphabet[(int)current_node->value.expression[iter]], new_scale, SYMBOL, baseline_left, baseline_right, 0);
+        (*baseline_parent) = result.height / 2;
+    }
     return result;
 }
-
-#if 0
-image mergeDownscaledBitmap(image *alphabet, image left, image right, double scale)
-{
-    //image downscaled = createDownscaledImage(right, scale);
-    //
-}
-#endif
 
 image createDownscaledImage(image original, double scale)
 {
     image downscaled;
-    downscaled.height = (int)((double)original.height * scale);
-    downscaled.width = (int)((double)original.width * scale);
+    downscaled.height = (unsigned int)((double)original.height * scale);
+    downscaled.width = (unsigned int)((double)original.width * scale);
     downscaled.maxval = original.maxval;
     setTypeP6(downscaled.magic_number);
     downscaled.map = (pixel *)malloc(downscaled.width * downscaled.height * sizeof(pixel));
     for (unsigned int i = 0; i < original.height; i++)
         for (unsigned int j = 0; j < original.width; j++)
-            downscaled.map[minInt(downscaled.height - 1, (int)(i * scale)) * downscaled.width + minInt(downscaled.width - 1, (int)(j * scale))] = original.map[i * original.width + j];
+            downscaled.map[minInt(downscaled.height - 1, (unsigned int)(i * scale)) * downscaled.width + minInt(downscaled.width - 1, (unsigned int)(j * scale))] = original.map[i * original.width + j];
     return downscaled;
 }
 
@@ -85,12 +92,12 @@ image generateBitmapFromTextDEBUG(image *alphabet, const char *expression)
     unsigned int i;
     for (i = 1; i < STRING_SIZE && i <= length; i++)
     {
-        sequence[i] = mergeBitmapAndFreeMemory(sequence[i - 1], alphabet[(int)expression[i - 1]], 1.0, '\0');
+        sequence[i] = mergeBitmapAndFreeMemory(sequence[i - 1], alphabet[(int)expression[i - 1]], 1.0, '\0', 0, 0, 0);
     }
     return sequence[i - 1];
 }
 
-image mergeBitmapHorizontal(image left, image right, int spot)
+image mergeBitmapHorizontal(image left, image right, int spot, unsigned int baseline_left, unsigned int baseline_right)
 {
     if (isImageEmpty(left))
         return copyImage(right);
@@ -98,28 +105,46 @@ image mergeBitmapHorizontal(image left, image right, int spot)
         return copyImage(left);
     image result;
     setTypeP6(result.magic_number);
-    result.height = maxInt(left.height, right.height);
+    if (spot == BASED)
+        result.height = left.height + right.height - minInt(baseline_left, baseline_right) - minInt(left.height - baseline_left, right.height - baseline_right);
+    else
+        result.height = maxInt(left.height, right.height);
     result.width = left.width + right.width;
     result.maxval = maxInt(left.maxval, right.maxval);
     result.map = (pixel *)malloc(result.width * result.height * sizeof(pixel));
+
     for (unsigned int i = 0; i < result.width * result.height; i++)
     {
         result.map[i].red = 255;
         result.map[i].green = 255;
         result.map[i].blue = 255;
     }
-    for (unsigned int i = 0; i < left.height; i++)
-        for (unsigned int j = 0; j < left.width; j++)
-            result.map[i * result.width + j] = left.map[i * left.width + j];
+    if (spot != BASED)
+    {
+        for (unsigned int i = 0; i < left.height; i++)
+            for (unsigned int j = 0; j < left.width; j++)
+                result.map[i * result.width + j] = left.map[i * left.width + j];
 
-    if (spot == TOP)
-        for (unsigned int i = 0; i < right.height; i++)
-            for (unsigned int j = 0; j < right.width; j++)
-                result.map[i * result.width + j + left.width] = right.map[i * right.width + j];
+        if (spot == TOP)
+            for (unsigned int i = 0; i < right.height; i++)
+                for (unsigned int j = 0; j < right.width; j++)
+                    result.map[i * result.width + j + left.width] = right.map[i * right.width + j];
+        else if (spot == BOTTOM)
+            for (unsigned int i = 0; i < right.height; i++)
+                for (unsigned int j = 0; j < right.width; j++)
+                    result.map[(result.width * (result.height - right.height)) + i * result.width + j + left.width] = right.map[i * right.width + j];
+    }
     else
+    {
+        unsigned int level = maxInt(baseline_left, baseline_right);
+        for (unsigned int i = 0; i < left.height; i++)
+            for (unsigned int j = 0; j < left.width; j++)
+                result.map[i * result.width + j + (level - baseline_left) * result.width] = left.map[i * left.width + j];
+
         for (unsigned int i = 0; i < right.height; i++)
             for (unsigned int j = 0; j < right.width; j++)
-                result.map[(result.width * (result.height - right.height)) + i * result.width + j + left.width] = right.map[i * right.width + j];
+                result.map[i * result.width + j + left.width + (level - baseline_right) * result.width] = right.map[i * right.width + j];
+    }
     return result;
 }
 
@@ -183,15 +208,15 @@ image mergeBitmapVertical(image top, image bottom, int spot)
     return result;
 }
 
-image mergeBitmapAndFreeMemory(image replaced, image added, double scale, char operation)
+image mergeBitmapAndFreeMemory(image replaced, image added, double scale, char operation, unsigned int baseline_left, unsigned int baseline_right, unsigned int child_height)
 {
     image downscaled = createDownscaledImage(added, scale);
     image result;
-    if (operation != '_' && operation != '/')
-        result = mergeBitmapHorizontal(copyImage(replaced), copyImage(downscaled), TOP);
+    if (operation == '^' || operation == SYMBOL)
+        result = mergeBitmapHorizontal(replaced, downscaled, TOP, baseline_left, baseline_right);
     else if (operation == '_')
-        result = mergeBitmapHorizontal(copyImage(replaced), copyImage(downscaled), BOTTOM);
-    else
+        result = mergeBitmapHorizontal(replaced, downscaled, BOTTOM, baseline_left, baseline_right);
+    else if (operation == '/')
     {
         if (replaced.width > downscaled.width)
             for (unsigned int i = 0; i < replaced.width; i++)
@@ -207,12 +232,42 @@ image mergeBitmapAndFreeMemory(image replaced, image added, double scale, char o
                 downscaled.map[i].green = 0;
                 downscaled.map[i].blue = 0;
             }
-        result = mergeBitmapVertical(copyImage(replaced), downscaled, MIDDLE);
+        result = mergeBitmapVertical(replaced, downscaled, MIDDLE);
     }
+    else if (operation == ')' || operation == '(')
+    {
+        image upscaled = createUpscaledImageVertically(downscaled, (child_height / scale) / (double)added.height);
+        result = mergeBitmapHorizontal(replaced, upscaled, BASED, baseline_left, baseline_right);
+        deleteBitmap(&upscaled);
+    }
+    else
+        result = mergeBitmapHorizontal(replaced, downscaled, BASED, baseline_left, baseline_right);
 
     deleteBitmap(&replaced);
     deleteBitmap(&downscaled);
+    printf("%u", child_height);
     return result;
+}
+
+image createUpscaledImageVertically(image original, double scale)
+{
+    image upscaled;
+    upscaled.height = (unsigned int)((double)original.height * scale);
+    upscaled.width = original.width;
+    upscaled.maxval = original.maxval;
+    setTypeP6(upscaled.magic_number);
+    upscaled.map = (pixel *)malloc(upscaled.width * upscaled.height * sizeof(pixel));
+
+    double iter_old = 0.0;
+    unsigned int iter_new = 0;
+    while ((unsigned int)iter_old < original.height && iter_new < upscaled.height)
+    {
+        for (unsigned int i = 0; i < original.width; i++)
+            upscaled.map[iter_new * upscaled.width + i] = original.map[(unsigned int)iter_old * original.width + i];
+        iter_new++;
+        iter_old += 1.0 / scale;
+    }
+    return upscaled;
 }
 
 void deleteBitmap(image *bitmap)

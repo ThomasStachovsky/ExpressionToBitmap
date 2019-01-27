@@ -103,6 +103,8 @@ bool doesFileExist(char *filename)
 image *scanAlphabet()
 {
     image *alphabet = (image *)malloc(sizeof(image) * 256);
+    for (int i = 0; i < 256; i++)
+        alphabet[i] = createEmptyImage();
     char filename[STRING_SIZE];
     const char *EXTENSION = ".ppm";
     const char *SLASH_FILENAME = "SLASH";
@@ -141,7 +143,7 @@ image *scanAlphabet()
     return alphabet;
 }
 
-void printImage(image output, const char *original_path)
+void printImage(image bitmap, const char *original_path)
 {
     char path[STRING_SIZE];
     strcpy(path, original_path);
@@ -152,7 +154,7 @@ void printImage(image output, const char *original_path)
         sprintf(path, "%s%s", path, EXTENSION);
     if (doesFileExist(path))
     {
-        printf(RED "This file already exist. For your safety please type the path again or type another one:\n" RESET);
+        printf(RED "This file already exists. For your safety please type the path again or type another one:\n" RESET);
         scanf("%s", path);
         path_length = strlen(path);
         if (path_length <= extension_length || (path_length > extension_length && (path[path_length - 1] != 'm' || path[path_length - 2] != 'p' || path[path_length - 3] != 'p' || path[path_length - 4] != '.')))
@@ -161,11 +163,11 @@ void printImage(image output, const char *original_path)
     }
 
     FILE *file = fopen(path, "wb");
-    fprintf(file, "%c%c\n", output.magic_number[0], output.magic_number[1]);
+    fprintf(file, "%c%c\n", bitmap.magic_number[0], bitmap.magic_number[1]);
     fprintf(file, "# Created by Tomasz Stachowski's program\n");
-    fprintf(file, "%d %d\n", output.width, output.height);
-    fprintf(file, "%d\n", output.maxval);
-    fwrite(output.map, 3 * output.width, output.height, file);
+    fprintf(file, "%d %d\n", bitmap.width, bitmap.height);
+    fprintf(file, "%d\n", bitmap.maxval);
+    fwrite(bitmap.map, 3 * bitmap.width, bitmap.height, file);
     fclose(file);
 }
 
