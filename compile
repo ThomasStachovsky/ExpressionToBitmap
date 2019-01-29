@@ -1,2 +1,0 @@
-#!/bin/bash
-gcc -std=c11  -Wall  -Wextra  -Werror main.c bitmap.c bitmap.h io.h io.c tree.c tree.h utilities.h utilities.c -o executable
