@@ -31,7 +31,6 @@ typedef struct image
 } image;
 image generateBitmapFromTree(image *alphabet, node *head_of_tree);
 image generateBitmapFromTreeUtil(image *alphabet, node *current_node, double scale, unsigned int *baseline_parent);
-image generateBitmapFromTextDEBUG(image *alphabet, const char *expression); //DEBUG
 image mergeBitmapHorizontal(image left, image right, int spot, unsigned int baseline_left, unsigned int baseline_right);
 image mergeBitmapVertical(image top, image bottom, int spot);
 image mergeBitmapAndFreeMemory(image left, image right, double scale, char operation, unsigned int baseline_left, unsigned int baseline_right, unsigned int child_height);

@@ -118,18 +118,6 @@ image createDownscaledImage(image original, double scale)
     return downscaled;
 }
 
-image generateBitmapFromTextDEBUG(image *alphabet, const char *expression)
-{
-    image sequence[STRING_SIZE];
-    unsigned int length = strlen(expression);
-    unsigned int i;
-    for (i = 1; i < STRING_SIZE && i <= length; i++)
-    {
-        sequence[i] = mergeBitmapAndFreeMemory(sequence[i - 1], alphabet[(int)expression[i - 1]], 1.0, '\0', 0, 0, 0);
-    }
-    return sequence[i - 1];
-}
-
 image mergeBitmapHorizontal(image left, image right, int spot, unsigned int baseline_left, unsigned int baseline_right)
 {
     if (isImageEmpty(left))

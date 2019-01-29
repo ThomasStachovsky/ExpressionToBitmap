@@ -15,4 +15,3 @@ bool scanIfAgain();
 bool doesFileExist(char *filename);
 image *scanAlphabet();
 void printImage(image bitmap, const char *path);
-void generateTextDEBUG(node *current_node); //DEBUG
