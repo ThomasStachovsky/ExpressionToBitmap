@@ -12,7 +12,7 @@ void printGettingStarted()
     printf("While writing the formula you can use:\n");
     printf("+ - * / as arithmetic operators\n^ as superscript operator");
     printf("\n_ as subscript operator\nstrings of letters and digits as variables\n");
-    printf("($2,$3,...,$n) as multivariable functions where $1...n are expressions as arguments and ,(comma) separates them\n= > < as comparators\n\n" RESET);
+    printf("$1($2,$3,...,$n) as multivariable functions where $1...n are expressions as arguments and ,(comma) separates them\n= > < as comparators\n\n" RESET);
 }
 
 void printTypeExpression()
