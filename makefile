@@ -8,6 +8,9 @@ bitmap.o: bitmap.h tree.h
 tree.o: tree.h utilities.h
 utilities.o: utilities.h
 
+rmo: exptoimg
+	rm -f *.o
+
 clean: 
 	rm -f *.o
 	rm -f exptoimg
