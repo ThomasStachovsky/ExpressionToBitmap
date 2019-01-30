@@ -45,3 +45,14 @@ void clearStdin()
         while ((c = getchar()) != '\n' && c != EOF)
                 ;
 }
+
+bool doesFileExist(char *filename)
+{
+        FILE *file;
+        if ((file = fopen(filename, "r")))
+        {
+                fclose(file);
+                return true;
+        }
+        return false;
+}

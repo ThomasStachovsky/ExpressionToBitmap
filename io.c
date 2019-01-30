@@ -116,17 +116,6 @@ bool scanIfAgain()
     }
 }
 
-bool doesFileExist(char *filename)
-{
-    FILE *file;
-    if ((file = fopen(filename, "r")))
-    {
-        fclose(file);
-        return true;
-    }
-    return false;
-}
-
 image *scanAlphabet()
 {
     image *alphabet = (image *)malloc(sizeof(image) * 256);

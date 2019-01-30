@@ -25,7 +25,7 @@ image generateBitmapFromTreeUtil(image *alphabet, node *current_node, double sca
             new_scale = 0.5 * scale;
         else if (current_node->value.expression[0] == '/')
         {
-            new_scale = 0.8 * scale;
+            new_scale = 0.6 * scale;
             scale = new_scale;
         }
 

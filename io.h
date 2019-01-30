@@ -12,6 +12,4 @@ void printQuestionForPath();
 bool scanPath(char *path);
 void printDoneAndQuestionForAgain();
 bool scanIfAgain();
-bool doesFileExist(char *filename);
-image *scanAlphabet();
 void printImage(image bitmap, const char *path);

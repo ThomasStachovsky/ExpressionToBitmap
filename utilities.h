@@ -18,3 +18,4 @@ void clearString(char *s);
 int maxInt(int a, int b);
 int minInt(int a, int b);
 void clearStdin();
+bool doesFileExist(char *filename);
