@@ -185,4 +185,7 @@ void printImage(image bitmap, const char *original_path)
     fprintf(file, "%d\n", bitmap.maxval);
     fwrite(bitmap.map, 3 * bitmap.width, bitmap.height, file);
     fclose(file);
+    char xdg_open_command[STRING_SIZE] = "xdg-open ";
+    strcat(xdg_open_command, path);
+    system(xdg_open_command);
 }
